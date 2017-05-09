@@ -1,6 +1,7 @@
 <?php
 namespace AutoAcl\Factory\Model;
 
+use AutoAcl\Model\Role;
 use Zend\Permissions\Acl\Acl;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -39,16 +40,18 @@ class AutoAclFactory implements FactoryInterface
 		$config = $this->serviceLocator->get('config');
 		$config = $config['router']['routes'];
 
-		$this->acl->addResource('/routes');
+
+        $routePrefix = '/routes';
+		$this->acl->addResource($routePrefix);
 		foreach($config as $routeName => $routeConfig){
-			$this->addRouteResource('/routes', $routeName, $routeConfig);
+			$this->addRouteResource($routePrefix, $routeName, $routeConfig);
 		}
 	}
 
 	protected function addRouteResource($parentRoute, $currentRoute, $routeConfig)
 	{
 		$resourceName = $parentRoute.'/'.$currentRoute;
-		// echo 'adding: '.$resourceName.'<br />';
+		//echo 'adding: '.$resourceName.'<br />';
 		$this->acl->addResource($resourceName, $parentRoute);
 		if(isset($routeConfig['child_routes'])){
 			foreach($routeConfig['child_routes'] as $routeName => $config){
@@ -78,9 +81,20 @@ class AutoAclFactory implements FactoryInterface
 	{
 		$config = $this->serviceLocator->get('config');
 		$config = $config['auto-acl']['roles'];
-		foreach($config as $roleName => $roleConfig){
-			if(!$this->acl->hasRole($roleName)){
-				$this->acl->addRole($roleName);
+		foreach($config as $roleId => $roleConfig){
+			if(!$this->acl->hasRole($roleId)){
+                if(!isset($roleConfig['name'])){
+                    $roleConfig['name'] = $roleId;
+                }
+                if(!isset($roleConfig['description'])){
+                    $roleConfig['description'] = $roleId;
+                }
+//                echo 'adding role: '.$roleId.'<br />';
+				$this->acl->addRole(new Role(
+                    $roleId,
+                    $roleConfig['name'],
+                    $roleConfig['description']
+                ));
 			}
 
 			if(isset($roleConfig['allow'])){
@@ -93,7 +107,7 @@ class AutoAclFactory implements FactoryInterface
 						$priv = null;
 					}
 
-					$this->acl->allow($roleName, $resource, $priv);
+					$this->acl->allow($roleId, $resource, $priv);
 				}
 			}
 
@@ -107,7 +121,7 @@ class AutoAclFactory implements FactoryInterface
 						$priv = null;
 					}
 
-					$this->acl->deny($roleName, $resource, $priv);
+					$this->acl->deny($roleId, $resource, $priv);
 				}
 			}
 		}

@@ -4,6 +4,8 @@ return array(
         'abstract_factories' => array(),
         'factories' => array(
 			'AutoAcl\Acl' => 'AutoAcl\Factory\Model\AutoAclFactory',
+            'AutoAcl\RoleServiceInterface' => 'AutoAcl\Factory\Service\RoleServiceFactory',
+            'AutoAcl\Hydrator\Strategy\RoleStrategy' => 'AutoAcl\Factory\Hydrator\Strategy\RoleStrategyFactory',
         ),
 		'invokables' => array(
 		),
@@ -47,7 +49,10 @@ return array(
 
 		),
 		'roles' => array(
-//			'[ROLE NAME]' => array(
+//			'[ROLE ID]' => array(
+//                'name' => '', // A human friendly name
+//                'description' => '', // A human friendly description
+//                'parents' => array(),
 //				'allow' => array(
 //					// Permission ID isn't used for anything other then
 //					// Identifying specific permission
