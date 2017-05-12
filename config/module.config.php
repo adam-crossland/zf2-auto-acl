@@ -10,6 +10,7 @@ return array(
 		'invokables' => array(
 		),
 		'initializers' => array(
+            'AutoAcl\Initializer\AclAwareInitializer' => 'AutoAcl\Initializer\AclAwareInitializer'
 		),
 		'shared' => array(
 		),
