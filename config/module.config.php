@@ -4,7 +4,7 @@ return array(
         'abstract_factories' => array(),
         'factories' => array(
 			'AutoAcl\Acl' => 'AutoAcl\Factory\Model\AutoAclFactory',
-            'AutoAcl\RoleServiceInterface' => 'AutoAcl\Factory\Service\RoleServiceFactory',
+            \AutoAcl\Service\RoleServiceInterface::class => 'AutoAcl\Factory\Service\RoleServiceFactory',
             'AutoAcl\Hydrator\Strategy\RoleStrategy' => 'AutoAcl\Factory\Hydrator\Strategy\RoleStrategyFactory',
         ),
 		'invokables' => array(

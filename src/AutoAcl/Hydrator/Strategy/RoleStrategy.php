@@ -2,7 +2,7 @@
 namespace AutoAcl\Hydrator\Strategy;
 
 use AutoAcl\Service\RoleServiceInterface;
-use Zend\Stdlib\Hydrator\Strategy\DefaultStrategy;
+use Zend\Hydrator\Strategy\DefaultStrategy;
 use AutoAcl\Model\RoleInterface;
 
 class RoleStrategy extends DefaultStrategy

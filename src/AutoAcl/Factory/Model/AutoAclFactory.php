@@ -3,8 +3,11 @@ namespace AutoAcl\Factory\Model;
 
 use AutoAcl\Model\Role;
 use Zend\Permissions\Acl\Acl;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
+use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\ContainerException;
+use Zend\ServiceManager\Exception\ServiceNotCreatedException;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
 
 class AutoAclFactory implements FactoryInterface
 {
@@ -14,26 +17,34 @@ class AutoAclFactory implements FactoryInterface
 	/** @var ServiceLocatorInterface */
 	protected $serviceLocator;
 
-	/**
-	 * @param ServiceLocatorInterface $serviceLocator
-	 * @return mixed|\Zend\Permissions\Acl\Acl
-	 */
-	public function createService(ServiceLocatorInterface $serviceLocator)
-	{
-		$this->acl = new Acl();
-		$this->serviceLocator = $serviceLocator;
+    /**
+     * Create an object
+     *
+     * @param  ContainerInterface $container
+     * @param  string             $requestedName
+     * @param  null|array         $options
+     * @return object
+     * @throws ServiceNotFoundException if unable to resolve the service.
+     * @throws ServiceNotCreatedException if an exception is raised when
+     *     creating a service.
+     * @throws ContainerException if any other error occurs
+     */
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    {
+        $this->acl = new Acl();
+        $this->serviceLocator = $container;
 
-		// Go through routes and use them as resources
-		$this->initRouteResources();
+        // Go through routes and use them as resources
+        $this->initRouteResources();
 
-		// Go through all navigation and use them as resources
-		//$this->initNavigationResources();
+        // Go through all navigation and use them as resources
+        //$this->initNavigationResources();
 
-		// Go through all configured permissions
-		$this->initRoles();
+        // Go through all configured permissions
+        $this->initRoles();
 
-		return $this->acl;
-	}
+        return $this->acl;
+    }
 
 	protected function initRouteResources()
 	{
